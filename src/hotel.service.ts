@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -9,6 +9,7 @@ import { hotelUpdateDto } from './hotelUpdate.dto';
 
 @Injectable()
 export class HotelService {
+    private readonly logger = new Logger(HotelService.name);
 
   constructor(
     @InjectRepository(Hotel)
@@ -16,6 +17,7 @@ export class HotelService {
   ) { }
 
   async getAllHotels(): Promise<Hotel[]> {
+        this.logger.log('Fetching all hotels');
     return await this.hotelRepo.find();
   }
   async createHotel(
@@ -34,6 +36,7 @@ export class HotelService {
       checkInEndTime
     });
     await this.hotelRepo.save(hotel);
+    this.logger.debug(`Hotel created: ${name} at ${location}`);
     return hotel;
   }
 
@@ -42,14 +45,17 @@ export class HotelService {
     const result = await this.hotelRepo.delete(id);
 
     if (result.affected === 0) {
+      this.logger.warn(`Attempted to delete non-existent hotel with ID: ${id}`);
       throw new NotFoundException(`Hotel with is ${id} not found`)
     }
+    this.logger.log(`Deleted hotel with ID: ${id}`);
 
   }
 
 
   async hotelSearch(hotelSearchDto: hotelSearchDto): Promise<Hotel[]> {
     const { name, location, rating, pricePerNight,checkInEndTime } = hotelSearchDto;
+        this.logger.log(`Searching hotels with criteria: ${JSON.stringify(hotelSearchDto)}`);
 
     const query = this.hotelRepo.createQueryBuilder('hotel')
 
@@ -79,22 +85,28 @@ export class HotelService {
         checkInEndTime: `%${checkInEndTime}%`,
       })
     }
-    return await query.getMany();
+    const hotels= await query.getMany();
+        this.logger.log(`Found ${hotels.length} hotel(s) matching search criteria`);
+        return hotels
 
   }
   async getHotelById(id: string): Promise<Hotel> {
     const hotel = await this.hotelRepo.findOne({ where: { id } })
     if (!hotel) {
+      this.logger.warn(`Hotel with ID ${id} not found`);
       throw new NotFoundException(`Hotel with ID ${id} not found`);
     }
+    this.logger.log(`Fetched hotel with ID: ${id}`);
     return hotel;
+
   }
 
   async updateHotel(id: string, hotelUpdatedto: hotelUpdateDto): Promise<Hotel> {
     const hotel = await this.getHotelById(id);
     Object.assign(hotel, hotelUpdatedto);
-
-    return await this.hotelRepo.save(hotel);
+    const updatedHotel = await this.hotelRepo.save(hotel);
+    this.logger.debug(`Updated hotel with ID: ${id}`);
+    return updatedHotel;
 
   }
 }
