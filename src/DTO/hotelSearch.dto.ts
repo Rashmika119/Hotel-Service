@@ -1,6 +1,6 @@
-import { IsOptional, IsString } from "class-validator"
+import { IsNumber, IsOptional, IsString, Matches } from "class-validator"
 
-export class hotelSearchDto{
+export class hotelSearchDto {
     @IsString()
     @IsOptional()
     name?: string
@@ -9,15 +9,17 @@ export class hotelSearchDto{
     @IsOptional()
     location?: string
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
     rating?: number
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
     pricePerNight?: number
 
-    @IsString()
     @IsOptional()
-    checkInEndTime?: string
+    @Matches(/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
+        message: 'checkInEndTime must be in HH:MM:SS format',
+    })
+    checkInEndTime?: string;
 } 
