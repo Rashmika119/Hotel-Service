@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HotelController } from './hotel.controller';
 import { HotelService } from './hotel.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Hotel } from './hotel.entity';
+import { Hotel } from './Entity/hotel.entity';
 
 @Module({
   imports: [

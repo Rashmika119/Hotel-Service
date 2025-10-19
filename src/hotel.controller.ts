@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query } from '@nestjs/common';
 import { HotelService } from './hotel.service';
-import type { hotelSearchDto } from './hotelSearch.dto';
-import type { hotelUpdateDto } from './hotelUpdate.dto';
+import type { hotelSearchDto } from './DTO/hotelSearch.dto';
+import type { hotelUpdateDto } from './DTO/hotelUpdate.dto';
 
 @Controller('hotel')
 export class HotelController {

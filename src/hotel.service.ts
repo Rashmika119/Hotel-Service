@@ -2,9 +2,9 @@ import { Injectable, InternalServerErrorException, Logger, NotFoundException } f
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { Hotel } from './hotel.entity';
-import { hotelSearchDto } from './hotelSearch.dto';
-import { hotelUpdateDto } from './hotelUpdate.dto';
+import { Hotel } from './Entity/hotel.entity';
+import { hotelSearchDto } from './DTO/hotelSearch.dto';
+import { hotelUpdateDto } from './DTO/hotelUpdate.dto';
 
 
 @Injectable()
