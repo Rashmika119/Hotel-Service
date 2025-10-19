@@ -1,7 +1,23 @@
-export interface hotelSearchDto{
-    name:string
-    location:string
-    rating:number
-    pricePerNight:number
-    checkInEndTime:string
+import { IsOptional, IsString } from "class-validator"
+
+export class hotelSearchDto{
+    @IsString()
+    @IsOptional()
+    name?: string
+
+    @IsString()
+    @IsOptional()
+    location?: string
+
+    @IsString()
+    @IsOptional()
+    rating?: number
+
+    @IsString()
+    @IsOptional()
+    pricePerNight?: number
+
+    @IsString()
+    @IsOptional()
+    checkInEndTime?: string
 } 

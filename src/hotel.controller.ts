@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Query } from '
 import { HotelService } from './hotel.service';
 import type { hotelSearchDto } from './DTO/hotelSearch.dto';
 import type { hotelUpdateDto } from './DTO/hotelUpdate.dto';
+import { hotelCreateDTO } from './DTO/hotelCreate.dto';
 
 @Controller('hotel')
 export class HotelController {
@@ -21,13 +22,8 @@ export class HotelController {
   }
 
   @Post()
-  async createHotel(
-    @Body('name') name: string,
-    @Body('location') location: string,
-    @Body('rating') rating: number,
-    @Body('pricePerNight') pricePerNight: number,
-    @Body('checkInEndTime') checkInEndTime: string
-  ) {
+  async createHotel(@Body() dto:hotelCreateDTO) {
+    const {name,location,rating,pricePerNight,checkInEndTime}=dto
     this.logger.debug(`POST /hotel called to create hotel: ${name} at ${location}`);
     return this.hotelService.createHotel(name, location, rating, pricePerNight, checkInEndTime)
   }
