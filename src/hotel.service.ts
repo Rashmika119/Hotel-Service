@@ -18,12 +18,7 @@ export class HotelService {
 
   async getAllHotels(): Promise<Hotel[]> {
     this.logger.log('Fetching all hotels');
-    try {
       return await this.hotelRepo.find();
-    } catch (error) {
-      this.logger.error("error of fetching data")
-      throw new InternalServerErrorException("failed to get hotel details");
-    }
 
   }
   async createHotel(
@@ -33,7 +28,6 @@ export class HotelService {
     pricePerNight: number,
     checkInEndTime: string
   ): Promise<Hotel> {
-    try {
       const hotel = this.hotelRepo.create({
         name,
         location,
@@ -44,15 +38,10 @@ export class HotelService {
       await this.hotelRepo.save(hotel);
       this.logger.debug(`Hotel created: ${name} at ${location}`);
       return hotel;
-    } catch (error) {
-      this.logger.error("error of creating hotel")
-      throw new InternalServerErrorException("failed to create hotel");
-    }
   }
 
 
   async deleteHotel(id: string): Promise<void> {
-    try {
       const result = await this.hotelRepo.delete(id);
 
       if (result.affected === 0) {
@@ -60,10 +49,6 @@ export class HotelService {
         throw new NotFoundException(`Hotel with is ${id} not found`)
       }
       this.logger.log(`Deleted hotel with ID: ${id}`);
-    } catch (error) {
-      this.logger.error("error of deleteing hotel with id: ", id)
-      throw new InternalServerErrorException("failed to delete hotel details");
-    }
 
   }
 
@@ -71,7 +56,6 @@ export class HotelService {
   async hotelSearch(hotelSearchDto: hotelSearchDto): Promise<Hotel[]> {
     const { name, location, rating, pricePerNight, checkInEndTime } = hotelSearchDto;
     this.logger.log(`Searching hotels with criteria: ${JSON.stringify(hotelSearchDto)}`);
-    try {
       const query = this.hotelRepo.createQueryBuilder('hotel')
 
       if (name) {
@@ -103,15 +87,9 @@ export class HotelService {
       const hotels = await query.getMany();
       this.logger.log(`Found ${hotels.length} hotel(s) matching search criteria`);
       return hotels
-    } catch (error) {
-      this.logger.error("error of searching hotel ", error.stack)
-      throw new InternalServerErrorException("failed to search hotel ");
-    }
-
-
   }
   async getHotelById(id: string): Promise<Hotel> {
-    try {
+
       const hotel = await this.hotelRepo.findOne({ where: { id } })
       if (!hotel) {
         this.logger.warn(`Hotel with ID ${id} not found`);
@@ -119,24 +97,17 @@ export class HotelService {
       }
       this.logger.log(`Fetched hotel with ID: ${id}`);
       return hotel;
-    } catch (error) {
-      this.logger.error(`error of getting hotel with id: ${id}`, error.stack)
-      throw new InternalServerErrorException("failed to get hotel by id hotel ");
-    }
 
   }
 
   async updateHotel(id: string, hotelUpdatedto: hotelUpdateDto): Promise<Hotel> {
-    try {
+
       const hotel = await this.getHotelById(id);
       Object.assign(hotel, hotelUpdatedto);
       const updatedHotel = await this.hotelRepo.save(hotel);
       this.logger.debug(`Updated hotel with ID: ${id}`);
       return updatedHotel;
-    } catch (error) {
-      this.logger.error(`error of updating hotel with id: ${id}`, error.stack)
-      throw new InternalServerErrorException("failed to update hotel ");
-    }
+
 
   }
 }
