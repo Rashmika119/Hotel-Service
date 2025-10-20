@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, InternalServerErrorException, Logger, Param, Post, Put, Query } from '@nestjs/common';
 import { HotelService } from './hotel.service';
-import type { hotelSearchDto } from './DTO/hotelSearch.dto';
-import type { hotelUpdateDto } from './DTO/hotelUpdate.dto';
+import { hotelSearchDto} from './DTO/hotelSearch.dto';
+import { hotelUpdateDto } from './DTO/hotelUpdate.dto';
 import { hotelCreateDTO } from './DTO/hotelCreate.dto';
 
 @Controller('hotel')
@@ -14,7 +14,9 @@ export class HotelController {
     this.logger.log(`GET /hotel called with query: ${JSON.stringify(param)}`);
     try {
       if (Object.keys(param).length) {
-        return this.hotelService.hotelSearch(param);
+        const flights = await this.hotelService.hotelSearch(param);
+        this.logger.debug(`Found ${flights.length} flights matching query`);
+        return flights;
       } else {
         return this.hotelService.getAllHotels();
       }
